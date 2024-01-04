@@ -67,6 +67,7 @@ public class CategoryController {
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(categoryRepository.save(category));
+				
 	}
 	
 	@ResponseStatus(HttpStatus.NO_CONTENT)
