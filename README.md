@@ -2,20 +2,20 @@
 Como desafio final do bloco 02 do bootcamp de desenvolvimento Full-Stack da Generation Brasil, foi desenvolvido em Java este sistema de gerenciamento de produtos para uma farmácia.
 
 ## Tecnologias usadas
-Java 17
-SpringBoot 3.2.0
-MySQL 8.0
-Maven 4.0.0
-Hibernate
-Lombok 1.18.30
+- Java 17
+- SpringBoot 3.2.0
+- MySQL 8.0
+- Maven 4.0.0
+- Hibernate
+- Lombok 1.18.30
 
 ## Pré-requisitos
 Antes de começar, certifique-se de ter instalado:
 
-Java JDK 11 ou superior
-MySQL
-Maven
-Lombok
+- Java JDK 11 ou superior
+- MySQL
+- Maven
+- Lombok
 
 ## Configuração
 
