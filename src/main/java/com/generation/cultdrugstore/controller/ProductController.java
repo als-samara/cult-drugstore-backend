@@ -36,35 +36,42 @@ public class ProductController {
 	
 	@GetMapping("/all")
 	public ResponseEntity<List<Product>> getAll(){
+		// The 'findAll()' method retrieves all products from the repository
 		return ResponseEntity.ok(productRepository.findAll());
 	}
 	
 	@GetMapping("/id/{id}")
 	public ResponseEntity<Product> getById(@PathVariable Long id){
-		return productRepository.findById(id)
-				.map(ResponseEntity::ok)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ID not found!"));
+		return productRepository.findById(id) // Retrieves a product from the repository by its ID
+				.map(ResponseEntity::ok) // If the product is found, maps it to a ResponseEntity with status 200 (OK)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ID not found!")); // If the product is not found, throws a ResponseStatusException with status 404 (NOT FOUND)
 	}
 	
 	@GetMapping("/name/{name}")
+	// retrieves a list of products based on the provided name or part of the name (containing)
 	public ResponseEntity<List<Product>> getByName(@PathVariable String name) {
+		// returns a ResponseEntity OK even if the list returned it's empty
 		return ResponseEntity.ok(productRepository.findAllByProductNameContainingIgnoreCase(name));
 	}
 	
 	@PostMapping("/create")
 	public ResponseEntity<Product> post(@Valid @RequestBody Product product) {
+		// Searches for a category based on the ID obtained from the product on RequestBody
 		return categoryRepository.findById(product.getCategory().getId())
+				// maps the category, if it exists, create the product and return a ResponseEntity with status 201 (Created)
 				.map(existingCategory -> {
 					return ResponseEntity.status(HttpStatus.CREATED)
-							.body(productRepository.save(product));
+							.body(productRepository.save(product)); // the body response returns the category created
 				})
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category does not exist!"));
 	}
 	
 	@PutMapping("/update")
 	public ResponseEntity<Product> put(@Valid @RequestBody Product product) {
+		// Searches for a product in the productRepository based on the ID obtained from the product object passed in the request
 	    return productRepository.findById(product.getId())
 	            .map(existingProduct -> {
+	            	// If the product exists, check if the its category exists and save the product
 	                if (categoryRepository.existsById(product.getCategory().getId()))
 	                    return ResponseEntity.status(HttpStatus.OK).body(productRepository.save(product));
 	    
