@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.generation.cultdrugstore.model.Product;
+import com.generation.cultdrugstore.model.*;
 import com.generation.cultdrugstore.repository.CategoryRepository;
 import com.generation.cultdrugstore.repository.ProductRepository;
 
@@ -29,9 +29,10 @@ import jakarta.validation.Valid;
 public class ProductController {
 	
 	@Autowired
-	private ProductRepository productRepository;
+	ProductRepository productRepository;
 	
-	@Autowired CategoryRepository categoryRepository;
+	@Autowired 
+	CategoryRepository categoryRepository;
 	
 	@GetMapping("/all")
 	public ResponseEntity<List<Product>> getAll(){
