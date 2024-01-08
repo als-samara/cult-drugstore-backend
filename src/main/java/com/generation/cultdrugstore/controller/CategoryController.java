@@ -32,26 +32,33 @@ public class CategoryController {
 	
 	@GetMapping("/all")
 	public ResponseEntity<List<Category>> getAll(){
+		// The 'findAll()' method retrieves all categories from the repository
 		return ResponseEntity.ok(categoryRepository.findAll());
 	}
 	
 	@GetMapping("/id/{id}")
 	public ResponseEntity<Category> getById(@PathVariable Long id) {
+		// Searches by Id and maps the object to ResponseEntity with status OK, if it is found
 		return categoryRepository.findById(id)
 				.map(ResponseEntity::ok)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 	}
 	
+	// The method returns a ResponseEntity containing a list of Categories
 	@GetMapping("description/{description}")
 	public ResponseEntity<List<Category>> getByDescription(@PathVariable String description){
+		// It will always returns "OK" even if the list it's empty
+		// The method "find all..." belongs to JPA repository and uses the description attribute from class Category, to search in the repository
 		return ResponseEntity.ok(categoryRepository.findAllByDescriptionContainingIgnoreCase(description));
 	}
 	
 	@PostMapping("/create")
 	public ResponseEntity<Category> create(@Valid @RequestBody Category category){
+		// checks if the informed category exists by its description
 		if(categoryRepository.existsByDescriptionIgnoreCase(category.getDescription()))
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "Category already exists!");
 		
+		// if the description doesn't exist, it saves it on the repository.
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(categoryRepository.save(category));
 		
@@ -65,6 +72,7 @@ public class CategoryController {
 				categoryRepository.findById(category.getId()).isEmpty())
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "Category already exists!");
 		
+		// returns a RE with status OK and the object updated on response body
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(categoryRepository.save(category));
 				
