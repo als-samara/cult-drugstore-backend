@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.generation.cultdrugstore.model.*;
+import com.generation.cultdrugstore.model.Product;
 import com.generation.cultdrugstore.repository.CategoryRepository;
 import com.generation.cultdrugstore.repository.ProductRepository;
 
@@ -54,6 +55,7 @@ public class ProductController {
 		return ResponseEntity.ok(productRepository.findAllByProductNameContainingIgnoreCase(name));
 	}
 	
+	@PreAuthorize("hasRole('rolePharmacist', 'roleAdmin')")
 	@PostMapping("/create")
 	public ResponseEntity<Product> post(@Valid @RequestBody Product product) {
 		// Searches for a category based on the ID obtained from the product on RequestBody
@@ -66,6 +68,7 @@ public class ProductController {
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category does not exist!"));
 	}
 	
+	@PreAuthorize("hasRole('rolePharmacist', 'roleAdmin')")
 	@PutMapping("/update")
 	public ResponseEntity<Product> put(@Valid @RequestBody Product product) {
 		// Searches for a product in the productRepository based on the ID obtained from the product object passed in the request
@@ -81,6 +84,7 @@ public class ProductController {
 	            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product does not exist! Check the typed ID."));
 	}
 	
+	@PreAuthorize("hasRole('rolePharmacist', 'roleAdmin')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/delete/{id}")
 	public void delete(@PathVariable Long id) {

@@ -46,4 +46,8 @@ public class User {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties("user")
 	private List<Product> products;
+	
+	// rolePharmacist , roleAdmin , roleUser
+	@NotBlank(message = "Indicate at least one role")
+	private List<String> roles;
 }
