@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.generation.cultdrugstore.model.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-	public Optional<User> findByUser(String user);
+	public Optional<User> findByUsername(String user);
 }

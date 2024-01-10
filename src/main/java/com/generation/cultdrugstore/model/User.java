@@ -30,7 +30,7 @@ public class User {
 	private String username;
 	
 	@NotBlank(message = "Name cannot be blank")
-	private String nome;
+	private String name;
 	
 	@NotBlank(message = "Name cannot be blank")
 	@Size(min=8, message="Password cannot be under 8 characters")
@@ -38,7 +38,7 @@ public class User {
 	
 	@Column(length = 5000)
 	@Size(max = 5000, message = "O link da foto não pode ser maior do que 5000 caracteres")
-	private String foto;
+	private String photo;
 	
 	// fetch type lazy = products won't be loaded by default with the user, unless it's explicitly accessed
 	// user is the name of the field in the Product entity that maps the relationship
