@@ -55,7 +55,7 @@ public class ProductController {
 		return ResponseEntity.ok(productRepository.findAllByProductNameContainingIgnoreCase(name));
 	}
 	
-	@PreAuthorize("hasRole('rolePharmacist', 'roleAdmin')")
+	@PreAuthorize("hasAnyRole('rolePharmacist', 'roleAdmin')")
 	@PostMapping("/create")
 	public ResponseEntity<Product> post(@Valid @RequestBody Product product) {
 		// Searches for a category based on the ID obtained from the product on RequestBody
