@@ -1,6 +1,7 @@
 package com.generation.cultdrugstore.security;
 
 import java.security.Key;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +18,7 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtService {
-public static final String SECRET = "6b4cdd640394a48ec031355613c4cc4e80c23efcfea35dd498c41f1e7e403153";
+public static final String SECRET = "cb8a5268624319ef106ef3149c8bc8e1038f6573f137c0794546940ef0c07605";
 	
 	private Key getSignKey() {
 		byte[] keyBytes = Decoders.BASE64.decode(SECRET);
@@ -52,17 +53,18 @@ public static final String SECRET = "6b4cdd640394a48ec031355613c4cc4e80c23efcfea
 		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
 	}
 
-	private String createToken(Map<String, Object> claims, String userName) {
+	private String createToken(Map<String, Object> claims, String userName, Collection<String> roles) {
 		return Jwts.builder()
 					.setClaims(claims)
 					.setSubject(userName)
+					.claim("roles", roles)
 					.setIssuedAt(new Date(System.currentTimeMillis()))
 					.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
 					.signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
 	}
 
-	public String generateToken(String userName) {
+	public String generateToken(String userName, Collection<String> roles) {
 		Map<String, Object> claims = new HashMap<>();
-		return createToken(claims, userName);
+        return createToken(claims, userName, roles);
 	}
 }

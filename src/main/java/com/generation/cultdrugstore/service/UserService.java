@@ -1,5 +1,6 @@
 package com.generation.cultdrugstore.service;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,7 @@ public class UserService {
 				userLogin.get().setPhoto(user.get().getPhoto());
 				userLogin.get().setToken(generateToken(userLogin.get().getUsername()));
 				userLogin.get().setPassword("");
+				userLogin.get().setRoles(user.get().getRoles());
 
 				// returns the filled object
 				return userLogin;
@@ -93,16 +95,23 @@ public class UserService {
 
 	}
 
-	private String encryptPassword(String senha) {
+	private String encryptPassword(String password) {
 
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-		return encoder.encode(senha);
+		return encoder.encode(password);
 
 	}
 
-	private String generateToken(String usuario) {
-		return "Bearer " + jwtService.generateToken(usuario);
+	private String generateToken(String username) {
+		Optional<User> user = userRepository.findByUsername(username);
+
+	    if (user.isPresent()) {
+	        Collection<String> roles = user.get().getRoles();
+	        return "Bearer " + jwtService.generateToken(username, roles);
+	    } else {
+	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado", null);
+	    }
 	}
 
 }

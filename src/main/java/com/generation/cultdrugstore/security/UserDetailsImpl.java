@@ -17,12 +17,12 @@ public class UserDetailsImpl implements UserDetails {
 	
 	private String username;
 	private String password;
-	private List<GrantedAuthority> authorities;
+	private List<GrantedAuthority> roles;
 	
 	public UserDetailsImpl(User user) {
 		this.username = user.getUsername();
 		this.password = user.getPassword();
-		this.authorities = buildAuthorities(user.getRoles());
+		this.roles = buildAuthorities(user.getRoles());
 	}
 	
 	private List<GrantedAuthority> buildAuthorities(List<String> roles) {
@@ -37,7 +37,7 @@ public class UserDetailsImpl implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return authorities;
+		return roles;
 	}
 
 	@Override

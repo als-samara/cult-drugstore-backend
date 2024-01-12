@@ -1,10 +1,14 @@
 package com.generation.cultdrugstore.security;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -47,9 +51,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
 				if (jwtService.validateToken(token, userDetails)) {
-					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
-							null, userDetails.getAuthorities());
-					authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+					
+					// Obtenha as roles do UserDetails e crie uma lista de GrantedAuthority
+			        List<GrantedAuthority> authorities = userDetails.getAuthorities().stream()
+			                .map(authority -> new SimpleGrantedAuthority(authority.getAuthority()))
+			                .collect(Collectors.toList());
+			        
+			     // Configurar o UsernamePasswordAuthenticationToken com as roles
+			        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+			                userDetails, null, authorities);
+			        
+			     // Configurar detalhes do token
+			        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+					
 					SecurityContextHolder.getContext().setAuthentication(authToken);
 				}
 
