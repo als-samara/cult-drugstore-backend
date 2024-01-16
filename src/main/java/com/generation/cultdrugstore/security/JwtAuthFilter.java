@@ -1,14 +1,12 @@
 package com.generation.cultdrugstore.security;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -53,9 +51,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 				if (jwtService.validateToken(token, userDetails)) {
 					
 					// Obtenha as roles do UserDetails e crie uma lista de GrantedAuthority
-			        List<GrantedAuthority> authorities = userDetails.getAuthorities().stream()
-			                .map(authority -> new SimpleGrantedAuthority(authority.getAuthority()))
-			                .collect(Collectors.toList());
+					Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
 			        
 			     // Configurar o UsernamePasswordAuthenticationToken com as roles
 			        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(

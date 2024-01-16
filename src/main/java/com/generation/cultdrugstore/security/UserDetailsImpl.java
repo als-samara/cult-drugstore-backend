@@ -19,6 +19,7 @@ public class UserDetailsImpl implements UserDetails {
 	private String password;
 	private List<GrantedAuthority> roles;
 	
+	// This constructor extracts roles from the User object and sets them as authorities in the UserDetailsImpl
 	public UserDetailsImpl(User user) {
 		this.username = user.getUsername();
 		this.password = user.getPassword();

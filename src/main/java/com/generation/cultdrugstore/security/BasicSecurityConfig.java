@@ -63,21 +63,14 @@ public class BasicSecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/users/login", "/users/register", "/error/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                        .requestMatchers("/products/create", "/products/update", "/products/delete").hasAnyRole("rolePharmacist", "roleAdmin")
+                        .requestMatchers("/products/create", "/products/update", "/products/delete").hasAnyAuthority("ROLE_Pharmacist", "ROLE_Admin")
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(withDefaults());
 
         return http.build();
 
-    }
-    
-    
-    @Bean
-    JwtAuthFilter jwtFilter() throws Exception {
-    	JwtAuthFilter filter = new JwtAuthFilter();
-        return filter;
     }
 
 }

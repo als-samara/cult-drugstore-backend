@@ -55,7 +55,7 @@ public class ProductController {
 		return ResponseEntity.ok(productRepository.findAllByProductNameContainingIgnoreCase(name));
 	}
 	
-	@PreAuthorize("hasAnyRole('roleAdmin', 'roleUser')")
+	//@PreAuthorize("hasAnyRole('roleAdmin', 'rolePharmacist')")
 	@PostMapping("/create")
 	public ResponseEntity<Product> post(@Valid @RequestBody Product product) {
 		// Searches for a category based on the ID obtained from the product on RequestBody
@@ -68,7 +68,7 @@ public class ProductController {
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category does not exist!"));
 	}
 	
-	@PreAuthorize("hasAnyRole('roleAdmin', 'roleUser')")
+	//@PreAuthorize("hasAnyRole('roleAdmin', 'rolePharmacist')")
 	@PutMapping("/update")
 	public ResponseEntity<Product> put(@Valid @RequestBody Product product) {
 		// Searches for a product in the productRepository based on the ID obtained from the product object passed in the request
@@ -84,7 +84,7 @@ public class ProductController {
 	            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product does not exist! Check the typed ID."));
 	}
 	
-	@PreAuthorize("hasAnyRole('roleAdmin', 'roleUser')")
+	//@PreAuthorize("hasAnyRole('ROLE_roleAdmin', 'ROLE_rolePharmacist')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/delete/{id}")
 	public void delete(@PathVariable Long id) {
