@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.generation.cultdrugstore.dto.TokenDTO;
+import com.generation.cultdrugstore.dto.UserDTO;
+import com.generation.cultdrugstore.dto.UserUpdateDTO;
 import com.generation.cultdrugstore.model.User;
 import com.generation.cultdrugstore.model.UserLogin;
 import com.generation.cultdrugstore.repository.UserRepository;
@@ -26,58 +30,56 @@ import jakarta.validation.Valid;
 @RequestMapping("/users")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
-	
+
 	@Autowired
 	private UserService userService;
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@GetMapping("/all")
-	public ResponseEntity <List<User>> getAll(){
-		
+	public ResponseEntity<List<User>> getAll() {
+
 		return ResponseEntity.ok(userRepository.findAll());
-		
+
 	}
 
 	@GetMapping("/id/{id}")
-	public ResponseEntity<User> getById(@PathVariable Long id) {
-		return userRepository.findById(id)
-			.map(response -> ResponseEntity.ok(response))
-			.orElse(ResponseEntity.notFound().build());
-	}
-	
-	@GetMapping("/user/{user}")
-	public ResponseEntity<User> getByUsername(@PathVariable String user) {
-		return userRepository.findByUsername(user)
-			.map(response -> ResponseEntity.ok(response))
-			.orElse(ResponseEntity.notFound().build());
-	}
-	
-	@PostMapping("/login")
-	public ResponseEntity<UserLogin> login(@RequestBody Optional<UserLogin> userLogin){
+	public ResponseEntity<UserDTO> getById(@PathVariable Long id) {
+
+		UserDTO userDTO = userService.getUserById(id);
+		return ResponseEntity.status(HttpStatus.OK).body(userDTO);
 		
-		return userService.authenticateUser(userLogin)
-				.map(response -> ResponseEntity.status(HttpStatus.OK).body(response))
-				.orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
 	}
-    
+
+	@GetMapping("/user/{user}")
+	public ResponseEntity<UserDTO> getByUsername(@PathVariable String user) {
+
+		UserDTO userDTO = userService.getUserByUsername(user);
+		return ResponseEntity.status(HttpStatus.OK).body(userDTO);
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity<TokenDTO> login(@RequestBody Optional<UserLogin> userLogin) {
+
+		TokenDTO tokenDTO = userService.authenticateUser(userLogin);
+		return ResponseEntity.status(HttpStatus.OK).body(tokenDTO);
+
+	}
 
 	@PostMapping("/register")
-	public ResponseEntity<User> post(@RequestBody @Valid User user) {
+	public ResponseEntity<UserDTO> post(@RequestBody @Valid User user) {
 
-		return userService.registerUser(user)
-			.map(resposta -> ResponseEntity.status(HttpStatus.CREATED).body(resposta))
-			.orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+		UserDTO userDTO = userService.registerUser(user);
+		return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
 
 	}
 
 	@PutMapping("/update")
-	public ResponseEntity<User> put(@Valid @RequestBody User user) {
-		
-		return userService.updateUser(user)
-			.map(resposta -> ResponseEntity.status(HttpStatus.OK).body(resposta))
-			.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-		
+	public ResponseEntity<UserUpdateDTO> put(@Valid @RequestBody User user) {
+
+		UserUpdateDTO userUpdateDTO = userService.updateUser(user);
+		return ResponseEntity.status(HttpStatus.OK).body(userUpdateDTO);
+
 	}
 }

@@ -28,13 +28,13 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotBlank(message="Username cannot be blank!")
+	@NotBlank(message="O e-mail não pode estar vazio")
 	private String username;
 	
-	@NotBlank(message = "Name cannot be blank")
+	@NotBlank(message = "O nome não pode estar vazio")
 	private String name;
 	
-	@NotBlank(message = "Name cannot be blank")
+	@NotBlank(message = "Crie uma senha para o Usuário")
 	@Size(min=8, message="Password cannot be under 8 characters")
 	private String password;
 	
@@ -50,6 +50,6 @@ public class User {
 	private List<Product> products;
 	
 	// rolePharmacist , roleAdmin , roleUser
-	@NotEmpty(message = "Indicate at least one role")
+	@NotEmpty(message = "Defina o tipo de usuário")
 	private List<String> roles;
 }
