@@ -13,12 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
+import com.generation.cultdrugstore.dto.CategoryCreateDTO;
+import com.generation.cultdrugstore.dto.CategoryDTO;
 import com.generation.cultdrugstore.model.Category;
+import com.generation.cultdrugstore.model.Product;
 import com.generation.cultdrugstore.repository.CategoryRepository;
+import com.generation.cultdrugstore.service.CategoryService;
 
 import jakarta.validation.Valid;
 
@@ -30,61 +32,47 @@ public class CategoryController {
 	@Autowired
 	CategoryRepository categoryRepository;
 	
+	@Autowired CategoryService categoryService;
+	
 	@GetMapping("/all")
-	public ResponseEntity<List<Category>> getAll(){
-		// The 'findAll()' method retrieves all categories from the repository
-		return ResponseEntity.ok(categoryRepository.findAll());
+	public ResponseEntity<List<CategoryDTO>> getAll(){
+		return ResponseEntity.ok(categoryService.getAll());
 	}
 	
 	@GetMapping("/id/{id}")
-	public ResponseEntity<Category> getById(@PathVariable Long id) {
-		// Searches by Id and maps the object to ResponseEntity with status OK, if it is found
-		return categoryRepository.findById(id)
-				.map(ResponseEntity::ok)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+	public ResponseEntity<CategoryDTO> getById(@PathVariable Long id) {
+		return ResponseEntity.ok(categoryService.findById(id));
 	}
 	
-	// The method returns a ResponseEntity containing a list of Categories
 	@GetMapping("description/{description}")
-	public ResponseEntity<List<Category>> getByDescription(@PathVariable String description){
-		// It will always returns "OK" even if the list it's empty
-		// The method "find all..." belongs to JPA repository and uses the description attribute from class Category, to search in the repository
-		return ResponseEntity.ok(categoryRepository.findAllByDescriptionContainingIgnoreCase(description));
+	public ResponseEntity<List<CategoryDTO>> getByDescription(@PathVariable String description){
+		return ResponseEntity.ok(categoryService.getByDescription(description));
 	}
 	
 	@PostMapping("/create")
-	public ResponseEntity<Category> create(@Valid @RequestBody Category category){
-		// checks if the informed category exists by its description
-		if(categoryRepository.existsByDescriptionIgnoreCase(category.getDescription()))
-			throw new ResponseStatusException(HttpStatus.CONFLICT, "Category already exists!");
-		
-		// if the description doesn't exist, it saves it on the repository.
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(categoryRepository.save(category));
+	public ResponseEntity<CategoryDTO> create(@Valid @RequestBody CategoryCreateDTO categoryCreateDTO){
+		CategoryDTO createdCategoryDTO = categoryService.create(categoryCreateDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCategoryDTO);
 		
 	}
 	
 	@PutMapping("/update")
-	public ResponseEntity<Category> update(@Valid @RequestBody Category category){
-		// Check if a category with the same description (ignoring case) exists and if 
-		// a category with the provided ID doesn't exist
-		if(categoryRepository.existsByDescriptionIgnoreCase(category.getDescription()) && 
-				categoryRepository.findById(category.getId()).isEmpty())
-			throw new ResponseStatusException(HttpStatus.CONFLICT, "Category already exists!");
-		
-		// returns a RE with status OK and the object updated on response body
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(categoryRepository.save(category));
+	public ResponseEntity<CategoryDTO> update(@Valid @RequestBody Category category){
+		CategoryDTO updatedCategoryDTO = categoryService.update(category);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedCategoryDTO);
 				
 	}
 	
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/delete/{id}")
-	public void delete(@PathVariable Long id) {
-		categoryRepository.findById(id)
-			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found!"));
-		
-		categoryRepository.deleteById(id);
+	public ResponseEntity<?> delete(@PathVariable Long id) {
+		categoryService.delete(id);
+        return ResponseEntity.noContent().build();
 	}
+	
+	@GetMapping("/category/{category}")
+    public ResponseEntity<List<Product>> getByCategoria(@PathVariable String category) {
+        List<Product> produtos = categoryService.getByCategory(category);
+        return ResponseEntity.ok(produtos);
+    }
 	
 }

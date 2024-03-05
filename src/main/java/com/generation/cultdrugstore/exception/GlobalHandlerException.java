@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.generation.cultdrugstore.exception.category.CategoryException;
 import com.generation.cultdrugstore.exception.user.UserException;
 
 @RestControllerAdvice
@@ -22,6 +23,12 @@ public class GlobalHandlerException {
 	// Handle all exceptions related to {@link UserException} and return the message in the response body.
 	@ExceptionHandler(UserException.class)
 	public ResponseEntity<String> handleUserException(UserException ex) {
+	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+	}
+	
+	// Handle all exceptions related to {@link CategoryException} and return the message in the response body.
+	@ExceptionHandler(CategoryException.class)
+	public ResponseEntity<String> handleCategoryException(CategoryException ex) {
 	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
 	}
 }

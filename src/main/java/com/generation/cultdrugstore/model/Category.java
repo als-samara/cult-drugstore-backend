@@ -24,7 +24,7 @@ public class Category {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotBlank(message="Category cannot be blank!")
+	@NotBlank(message="O nome da categoria não pode ser nulo")
 	@Column(length = 50)
 	private String description;
 	
