@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.generation.cultdrugstore.dto.CategoryCreateDTO;
-import com.generation.cultdrugstore.dto.CategoryDTO;
+import com.generation.cultdrugstore.dto.CategoryWithProductsDTO;
 import com.generation.cultdrugstore.dto.ProductDTO;
 import com.generation.cultdrugstore.model.Category;
 
@@ -18,7 +18,7 @@ public class CategoryMapper {
 	@Autowired
     private ProductMapper productMapper;
 	
-	public CategoryDTO toDTO(Category category) {
+	public CategoryWithProductsDTO toDTO(Category category) {
 		
 		 List<ProductDTO> productsDTO = new ArrayList<>();
 		    if (category.getProducts() != null) {
@@ -26,7 +26,7 @@ public class CategoryMapper {
 		                .map(productMapper::toDTO)
 		                .collect(Collectors.toList());
 		    }
-		    var categoryDTO = new CategoryDTO(
+		    var categoryDTO = new CategoryWithProductsDTO(
 		            category.getId(),
 		            category.getDescription(),
 		            productsDTO
