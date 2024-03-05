@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.generation.cultdrugstore.dto.CategoryCreateDTO;
-import com.generation.cultdrugstore.dto.CategoryDTO;
+import com.generation.cultdrugstore.dto.CategoryWithProductsDTO;
 import com.generation.cultdrugstore.model.Category;
 import com.generation.cultdrugstore.model.Product;
 import com.generation.cultdrugstore.repository.CategoryRepository;
@@ -35,30 +35,30 @@ public class CategoryController {
 	@Autowired CategoryService categoryService;
 	
 	@GetMapping("/all")
-	public ResponseEntity<List<CategoryDTO>> getAll(){
+	public ResponseEntity<List<CategoryWithProductsDTO>> getAll(){
 		return ResponseEntity.ok(categoryService.getAll());
 	}
 	
 	@GetMapping("/id/{id}")
-	public ResponseEntity<CategoryDTO> getById(@PathVariable Long id) {
+	public ResponseEntity<CategoryWithProductsDTO> getById(@PathVariable Long id) {
 		return ResponseEntity.ok(categoryService.findById(id));
 	}
 	
 	@GetMapping("description/{description}")
-	public ResponseEntity<List<CategoryDTO>> getByDescription(@PathVariable String description){
+	public ResponseEntity<List<CategoryWithProductsDTO>> getByDescription(@PathVariable String description){
 		return ResponseEntity.ok(categoryService.getByDescription(description));
 	}
 	
 	@PostMapping("/create")
-	public ResponseEntity<CategoryDTO> create(@Valid @RequestBody CategoryCreateDTO categoryCreateDTO){
-		CategoryDTO createdCategoryDTO = categoryService.create(categoryCreateDTO);
+	public ResponseEntity<CategoryWithProductsDTO> create(@Valid @RequestBody CategoryCreateDTO categoryCreateDTO){
+		CategoryWithProductsDTO createdCategoryDTO = categoryService.create(categoryCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCategoryDTO);
 		
 	}
 	
 	@PutMapping("/update")
-	public ResponseEntity<CategoryDTO> update(@Valid @RequestBody Category category){
-		CategoryDTO updatedCategoryDTO = categoryService.update(category);
+	public ResponseEntity<CategoryWithProductsDTO> update(@Valid @RequestBody Category category){
+		CategoryWithProductsDTO updatedCategoryDTO = categoryService.update(category);
         return ResponseEntity.status(HttpStatus.OK).body(updatedCategoryDTO);
 				
 	}

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.generation.cultdrugstore.dto.CategoryCreateDTO;
-import com.generation.cultdrugstore.dto.CategoryDTO;
+import com.generation.cultdrugstore.dto.CategoryWithProductsDTO;
 import com.generation.cultdrugstore.exception.category.CategoryAlreadyExistsException;
 import com.generation.cultdrugstore.exception.category.CategoryNotFoundException;
 import com.generation.cultdrugstore.mapper.CategoryMapper;
@@ -22,21 +22,21 @@ public class CategoryService {
 	@Autowired CategoryRepository categoryRepository;
 	@Autowired CategoryMapper categoryMapper;
 	
-	public List<CategoryDTO> getAll(){
+	public List<CategoryWithProductsDTO> getAll(){
 		List<Category> categories = categoryRepository.findAll();
 				return categories.stream()
 		                .map(categoryMapper::toDTO)
 		                .collect(Collectors.toList());
 	}
 	
-	public CategoryDTO findById(Long id) {
+	public CategoryWithProductsDTO findById(Long id) {
 		Optional<Category> optionalCategory = categoryRepository.findById(id);
 	    Category category = optionalCategory.orElseThrow(() -> new CategoryNotFoundException(
 	            "Categoria não encontrada! Id: " + id));
 	    return categoryMapper.toDTO(category);
     }
 	
-	public List<CategoryDTO> getByDescription(String description){
+	public List<CategoryWithProductsDTO> getByDescription(String description){
 		List<Category> categorieEntities = categoryRepository.findAllByDescriptionContainingIgnoreCase(description);
 		
 		if (categorieEntities.isEmpty()) {
@@ -48,7 +48,7 @@ public class CategoryService {
 					.collect(Collectors.toList());		
 	}
 	
-	public CategoryDTO create(CategoryCreateDTO categoryCreateDTO) {
+	public CategoryWithProductsDTO create(CategoryCreateDTO categoryCreateDTO) {
 		Category category = categoryMapper.toEntity(categoryCreateDTO);
 		
 		if(categoryRepository.existsByDescriptionIgnoreCase(category.getDescription()))
@@ -59,7 +59,7 @@ public class CategoryService {
         
     }
 	
-	public CategoryDTO update(Category category) {
+	public CategoryWithProductsDTO update(Category category) {
 		// Checks if a category with the same description (ignoring case) exists and if 
 		// a category with the provided ID doesn't exist
 		if(categoryRepository.existsByDescriptionIgnoreCase(category.getDescription()) && 

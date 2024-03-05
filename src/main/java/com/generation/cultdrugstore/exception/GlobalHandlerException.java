@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.generation.cultdrugstore.exception.category.CategoryException;
+import com.generation.cultdrugstore.exception.product.ProductException;
 import com.generation.cultdrugstore.exception.user.UserException;
 
 @RestControllerAdvice
@@ -30,5 +31,11 @@ public class GlobalHandlerException {
 	@ExceptionHandler(CategoryException.class)
 	public ResponseEntity<String> handleCategoryException(CategoryException ex) {
 	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+	}
+	
+	// Handle all exceptions related to {@link ProductException} and return the message in the response body.
+	@ExceptionHandler(ProductException.class)
+	public ResponseEntity<String> handleProductException(ProductException ex) {
+		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
 	}
 }
