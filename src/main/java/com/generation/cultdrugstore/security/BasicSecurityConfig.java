@@ -63,7 +63,7 @@ public class BasicSecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/users/login", "/users/register", "/error/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                        .requestMatchers("/products/create", "/products/update", "/products/delete").hasAnyAuthority("ROLE_Pharmacist", "ROLE_Admin")
+                        .requestMatchers("/products/create", "/products/update", "/products/delete", "/categories/create", "/categories/update", "/categories/delete").hasAnyAuthority("ROLE_Pharmacist", "ROLE_Admin")
                         .requestMatchers("users/all").hasAnyAuthority("ROLE_Admin")
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
